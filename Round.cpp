@@ -31,42 +31,49 @@ double length(int x1, int y1, int x2, int y2) {
 	return abs(sqrt(pow(double(x1) - x2, 2) + pow(double(y1) - y2, 2)));
 }
 
-vector< vector<char> > make_round(vector< vector<char> > v, char center, int radius, int x, int y) {
+vector< vector<char> > make_round(vector< vector<char> > v, char center, int radius, int x, int y, int orad) {
 	int outsize = (int)v.size(), insize = v[0].size();
 	for (int j = insize - 1; j > -1; --j)
-		for (int i = 0; i < outsize; ++i)
-			if (int(length(x, y, i, j)) <= radius)
+		for (int i = 0; i < outsize; ++i) {
+			int dist = int(length(x, y, i, j));
+			if ((dist <= radius) && (dist > orad))
 				v[i][j] = center;
+		}
 	return v;
 }
 
 int main() {
 	vector< vector<char> > v(50, vector<char>(50, ' '));
-	char command{};
+	string command{};
 	while (true) {
+		show_place(v);
 		cout << "> ";
 		cin >> command;
-		if (command == 'd') {
+		if (command == "draw") {
 			int outsize = (int)v.size(), insize = v[0].size();
 			if ((outsize > 0) && (insize > 0)) {
-				int radius{}, x{}, y{};
+				int radius{}, x{}, y{}, orad{};
 				char fone{};
-				cin >> radius >> x >> y >> fone;
-				v = make_round(v, fone, radius, x, y);
+				cin >> radius >> orad >> x >> y >> fone;
+				v = make_round(v, fone, radius, x, y, orad);
 				cout << "Round was made)\n";
 			}
 			else
 				cout << "Size of matrix too small to make a round!!";
 		}
-		else if (command == 's')
-			show_place(v);
-		else if (command == 'c')
-			system("cls");
-		else if (command == 'r') {
+		else if (command == "clear_matrix") {
+			for (int i = 0; i < (int)v.size(); ++i)
+				for (int j = 0; j < v[0].size(); ++j)
+					v[i][j] = ' ';
+		}
+		else if (command == "resize") {
 			int x, y;
 			cin >> x >> y;
 			v.resize(x, vector<char>(y));
+			for (int i = 0; i < (int)v.size(); ++i)
+				v[i].resize(y);
 		}
+		system("cls");
 	}
 	/*vector< vector<char> > v(50, vector<char>(50, ' '));
 	show_place(v);
